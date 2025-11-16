@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  azki:
+    build: .
+    container_name: azki
+    # We could add configs here too.
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    container_name: azki-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: azki
+      POSTGRES_USER: azki
+      POSTGRES_PASSWORD: azki
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: azki-redis
+    command: ["redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "6379:6379"
+
+  adminer:
+    image: adminer:latest
+    container_name: azki-adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
