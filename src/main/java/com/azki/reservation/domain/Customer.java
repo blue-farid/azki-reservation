@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serializable;
 import java.util.Date;
 
-//TODO GDPR - using converters to encode the customers data.
+//TODO GDPR - using converters to encode the customers data and hash passwords
 //TODO add username (for now email works as username too)
 @Data
 @Table
