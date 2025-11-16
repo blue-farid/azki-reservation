@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BlueWalletApplication {
+public class AzkiReservationApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BlueWalletApplication.class, args);
+        SpringApplication.run(AzkiReservationApplication.class, args);
     }
 }
