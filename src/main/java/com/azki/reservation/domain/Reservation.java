@@ -1,4 +1,4 @@
-package com.azki.reservation.domain.reservation;
+package com.azki.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,8 +15,10 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(nullable = false)
     private Long customerId;
-    @Column
+    @Column(nullable = false)
     private Long slotId;
+    @Column
+    private boolean active = true;
 }

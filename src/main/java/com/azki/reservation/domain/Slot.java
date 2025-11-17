@@ -1,4 +1,4 @@
-package com.azki.reservation.domain.reservation;
+package com.azki.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
