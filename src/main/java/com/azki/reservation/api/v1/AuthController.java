@@ -14,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-//TODO we could add a flow for login with password too
 //TODO circuit breaker
-//TODO bulkhead
 
 @RestController
 @RequestMapping("/api/auth")
