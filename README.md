@@ -1,8 +1,8 @@
-# Blue Wallet Application
-A high-performance digital wallet service.
+# Azki Reservation System
+A high-performance reservation service.
 
 ## Overview
-BlueWallet is a fintech microservice designed to securely handle customer authentication, and wallet transactions.  
+Azki Reservation System is a microservice designed to securely handle customer authentication, and time-slot reservations.
 The project focuses on reliability, scalability, and concurrency safety using modern Spring Boot 3 and Java 21.
 
 ---
@@ -12,10 +12,10 @@ The project focuses on reliability, scalability, and concurrency safety using mo
 ### Authentication & Security
 - Email-based OTP verification
 - JWT-based authorization
-- Role-based access control (RBAC) for customer endpoints
+- Role-based access control (RBAC) for endpoints
 
-### Wallet Management
-- Safe concurrent balance updates via
+### Reservation Management
+- Safe concurrent slot updates
 - Transaction validation and rollback protection
 
 ### Infrastructure
@@ -71,4 +71,4 @@ Please consider the following while reviewing the project:
 **Author:** Farid Masjedi  
 Software Engineer @ SnappBox
 
-https://github.com/blue-farid/blue-wallet
+https://github.com/blue-farid/azki-reservation

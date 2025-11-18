@@ -8,14 +8,20 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "azki-reservation.redisson")
 public class RedissonProperties {
-//    private Lock lock;
+    private Lock lock;
     private Bucket rateLimiter;
+
+    @Data
+    public static class Lock {
+        private LockConfig slot;
+    }
 
     @Data
     public static class LockConfig {
         private String key;
         private Integer waitTime;
         private Integer leaseTime;
+        private Integer maxTry;
     }
 
     @Data

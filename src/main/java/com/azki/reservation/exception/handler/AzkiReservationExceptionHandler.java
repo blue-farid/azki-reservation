@@ -6,6 +6,7 @@ import com.azki.reservation.api.v1.model.ValidationErrorResponse;
 import com.azki.reservation.constant.ApiStatus;
 import com.azki.reservation.exception.BaseException;
 import com.azki.reservation.util.MessageSourceUtil;
+import io.github.resilience4j.bulkhead.BulkheadFullException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -48,6 +49,11 @@ public class AzkiReservationExceptionHandler {
                 new ApiResponse<>(ApiStatus.FAILURE.name(), errorResponse),
                 HttpStatus.BAD_REQUEST
         );
+    }
+
+    @ExceptionHandler(BulkheadFullException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleBulkheadFull(BulkheadFullException ex) {
+        return buildResponse(HttpStatus.TOO_MANY_REQUESTS, messageSource.getMessageIfExist("exception.reservation.bulkhead-full"));
     }
 
     private ResponseEntity<ApiResponse<ErrorResponse>> buildResponse(HttpStatusCode status, String message) {
