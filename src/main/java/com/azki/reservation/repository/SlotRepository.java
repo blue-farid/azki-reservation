@@ -1,10 +1,12 @@
 package com.azki.reservation.repository;
 
 import com.azki.reservation.domain.Slot;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 // the skip lock scenario is the best for this type of concurrency but this solution
@@ -22,5 +24,5 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
             """, nativeQuery = true)
     Optional<Slot> findNextAvailableSlotForUpdate();
 
-    Optional<Slot> findFirstByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(Date startTime);
+    List<Slot> findByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(Date startTime, Pageable pageable);
 }

@@ -3,12 +3,15 @@ package com.azki.reservation.service.impl;
 import com.azki.reservation.api.v1.request.LoginOrSignupRequest;
 import com.azki.reservation.api.v1.request.LoginWithPasswordRequest;
 import com.azki.reservation.api.v1.request.OtpRequest;
+import com.azki.reservation.api.v1.request.SetPasswordRequest;
 import com.azki.reservation.api.v1.response.LoginOrSignupResponse;
 import com.azki.reservation.config.properties.SecurityProperties;
 import com.azki.reservation.constant.AuthoritiesConstant;
 import com.azki.reservation.domain.Customer;
+import com.azki.reservation.exception.auth.ConfirmPasswordException;
 import com.azki.reservation.exception.auth.InvalidEmailOrPasswordException;
 import com.azki.reservation.exception.auth.InvalidOtpException;
+import com.azki.reservation.exception.customer.CustomerNotFoundException;
 import com.azki.reservation.mapper.CustomerMapper;
 import com.azki.reservation.repository.CustomerRepository;
 import com.azki.reservation.service.AuthenticationService;
@@ -68,6 +71,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         customer.get().getMail(),
                         AuthoritiesConstant.CUSTOMER));
 
+    }
+
+    @Override
+    @Transactional
+    public void setPassword(SetPasswordRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new ConfirmPasswordException();
+        }
+
+        customerRepository.save(customerRepository.findById(request.getId())
+                .orElseThrow(CustomerNotFoundException::new)
+                .setPassword(request.getPassword()));
     }
 
     @Override

@@ -12,11 +12,12 @@ import com.azki.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -46,51 +47,52 @@ public class ReservationServiceImpl implements ReservationService {
                 .setSlotDto(slotMapper.toDto(avaliableSlot));
     }
 
+    // consider the skip for lock on the database is the best solution.
     @Override
     @Transactional
     public ReserveResponse reserveWithRedisLock(Long customerId) {
-        int attempts = 0;
+        int batchSize = properties.getLock().getSlot().getMaxTry();
+        List<Slot> slotBatch = slotRepository
+                .findByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(
+                        new Date(),
+                        PageRequest.of(0, batchSize)
+                );
 
-        while (attempts++ < properties.getLock().getSlot().getMaxTry()) {
-            Optional<Slot> optionalSlot = slotRepository
-                    .findFirstByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(new Date());
+        if (slotBatch.isEmpty()) {
+            throw new NoSlotAvailableException();
+        }
 
-            if (optionalSlot.isEmpty()) {
-                throw new NoSlotAvailableException();
-            }
-
-            Slot slot = optionalSlot.get();
+        for (Slot slot : slotBatch) {
             String lockKey = properties.getLock().getSlot().getKey() + slot.getId();
-
             RLock lock = redissonClient.getLock(lockKey);
             boolean acquired = false;
-
             try {
-                acquired = lock.tryLock(properties.getLock().getSlot().getWaitTime(),
-                        properties.getLock().getSlot().getLeaseTime(), TimeUnit.MILLISECONDS);
+                acquired = lock.tryLock(
+                        properties.getLock().getSlot().getWaitTime(),
+                        properties.getLock().getSlot().getLeaseTime(),
+                        TimeUnit.MILLISECONDS
+                );
 
                 if (!acquired) {
                     continue;
                 }
-
                 Slot freshSlot = slotRepository.findById(slot.getId())
                         .orElseThrow(NoSlotAvailableException::new);
-
                 if (freshSlot.isReserved()) {
                     continue;
                 }
-
                 freshSlot.setReserved(true);
                 slotRepository.save(freshSlot);
 
-                Reservation reservation = reservationRepository.save(new Reservation()
-                        .setCustomerId(customerId)
-                        .setSlotId(freshSlot.getId()));
+                Reservation reservation = reservationRepository.save(
+                        new Reservation()
+                                .setCustomerId(customerId)
+                                .setSlotId(freshSlot.getId())
+                );
 
                 return new ReserveResponse()
                         .setId(reservation.getId())
                         .setSlotDto(slotMapper.toDto(freshSlot));
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
@@ -100,7 +102,6 @@ public class ReservationServiceImpl implements ReservationService {
                 }
             }
         }
-
         throw new SlotLockTimeoutException();
     }
 
