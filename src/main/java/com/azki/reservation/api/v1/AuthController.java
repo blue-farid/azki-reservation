@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.azki.reservation.constant.AuthoritiesConstant.CUSTOMER;
 
-//TODO circuit breaker
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
