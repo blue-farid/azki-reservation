@@ -1,9 +1,9 @@
 package com.azki.reservation.e2e.auth;
 
-import com.snapp.pay.insurance.bluewallet.api.v1.model.ApiResponse;
-import com.snapp.pay.insurance.bluewallet.api.v1.request.LoginOrSignupRequest;
-import com.snapp.pay.insurance.bluewallet.api.v1.request.OtpRequest;
-import com.snapp.pay.insurance.bluewallet.api.v1.response.LoginOrSignupResponse;
+import com.azki.reservation.api.v1.model.ApiResponse;
+import com.azki.reservation.api.v1.request.LoginOrSignupRequest;
+import com.azki.reservation.api.v1.request.OtpRequest;
+import com.azki.reservation.api.v1.response.LoginOrSignupResponse;
 import com.azki.reservation.domain.Customer;
 import com.azki.reservation.e2e.BaseE2ETest;
 import com.azki.reservation.e2e.mockdata.Constants;
@@ -41,7 +41,7 @@ class AuthenticationE2ETest extends BaseE2ETest {
         OtpRequest request = new OtpRequest()
                 .setMail(Constants.FIRST_CUSTOMER_MAIL);
         ResponseEntity<ApiResponse<Void>> response =
-                rest.exchange("/auth/otp?mail=" + request.getMail(),
+                rest.exchange("/api/auth/otp?mail=" + request.getMail(),
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<>() {
@@ -62,7 +62,7 @@ class AuthenticationE2ETest extends BaseE2ETest {
                 .setOtp(otp);
         HttpEntity<LoginOrSignupRequest> entity = new HttpEntity<>(request);
         ResponseEntity<ApiResponse<LoginOrSignupResponse>> response = rest.exchange(
-                "/auth",
+                "/api/auth/otp",
                 HttpMethod.POST,
                 entity,
                 new ParameterizedTypeReference<>() {

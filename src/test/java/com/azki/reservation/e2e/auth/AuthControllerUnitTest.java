@@ -9,6 +9,7 @@ import com.azki.reservation.constant.ApiStatus;
 import com.azki.reservation.service.AuthenticationService;
 import com.azki.reservation.util.MessageSourceUtil;
 import com.azki.reservation.util.RateLimitUtil;
+import com.azki.reservation.util.SecurityUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ class AuthControllerUnitTest {
     private RateLimitUtil rateLimitUtil;
     @MockitoBean
     private MessageSourceUtil messageSourceUtil;
+    @MockitoBean
+    private SecurityUtil securityUtil;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -75,7 +78,7 @@ class AuthControllerUnitTest {
         LoginOrSignupRequest req = new LoginOrSignupRequest()
                 .setMail("user@mail.com").setOtp("123456");
 
-        mockMvc.perform(post("/api/auth")
+        mockMvc.perform(post("/api/auth/otp")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
