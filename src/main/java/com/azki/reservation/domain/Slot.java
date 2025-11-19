@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 @Data
-@Table(name = "avaliable_slot")
+@Table(name = "available_slot")
 @Entity
 @Accessors(chain = true)
 public class Slot {

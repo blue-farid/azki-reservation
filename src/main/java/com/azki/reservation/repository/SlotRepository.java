@@ -16,7 +16,7 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     @Query(value = """
                 SELECT *
                 FROM available_slot
-                WHERE reserved = false
+                WHERE is_reserved = false
                   AND start_time >= NOW()
                 ORDER BY start_time ASC
                 LIMIT 1
@@ -24,5 +24,17 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
             """, nativeQuery = true)
     Optional<Slot> findNextAvailableSlotForUpdate();
 
-    List<Slot> findByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(Date startTime, Pageable pageable);
+    List<Slot> findByReservedFalseAndStartTimeGreaterThanOrderByStartTimeAsc(Date startTime, Pageable pageable);
+
+// Alternative solution (DB-agnostic approach):
+// A scheduled job (configurable, midnight daily...) will preload a fixed number of future slots
+// (e.g., 10,000 - configurable) from the database into Redis.
+// All reservation requests will first read from Redis and attempt to reserve from the cached set.
+// Since Redis operates as a single-threaded cluster, this approach avoids concurrency issues.
+// At the end of the day, when the scheduled job runs again, it will clear expired/remaining keys
+// and repopulate Redis with the next upcoming slots.
+// Additionally, during each reservation, the system will check the Redis cache size for the slot keys.
+// When the cache size drops below a configurable threshold, an asynchronous background job will
+// automatically fetch and append more slots from the database to keep the cache filled up to the desired capacity (configurable).
+
 }

@@ -53,7 +53,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReserveResponse reserveWithRedisLock(Long customerId) {
         int batchSize = properties.getLock().getSlot().getMaxTry();
         List<Slot> slotBatch = slotRepository
-                .findByReservedFalseAndStartTimeGreaterThanEqualOrderByStartTimeAsc(
+                .findByReservedFalseAndStartTimeGreaterThanOrderByStartTimeAsc(
                         new Date(),
                         PageRequest.of(0, batchSize)
                 );
