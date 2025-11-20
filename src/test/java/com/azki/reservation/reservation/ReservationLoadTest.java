@@ -4,8 +4,10 @@ import com.azki.reservation.BaseE2ETest;
 import com.azki.reservation.api.v1.model.ApiResponse;
 import com.azki.reservation.api.v1.response.ReserveResponse;
 import com.azki.reservation.domain.Customer;
+import com.azki.reservation.domain.Reservation;
 import com.azki.reservation.domain.Slot;
 import com.azki.reservation.repository.CustomerRepository;
+import com.azki.reservation.repository.ReservationRepository;
 import com.azki.reservation.repository.SlotRepository;
 import com.azki.reservation.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 // NOTE:
@@ -56,6 +59,9 @@ class ReservationLoadTest extends BaseE2ETest {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     private List<Customer> mockCustomers;
 
@@ -150,6 +156,18 @@ class ReservationLoadTest extends BaseE2ETest {
 
         Assertions.assertTrue(successCount >= maxConcurrentCalls,
                 "Expected at least " + maxConcurrentCalls + " successful reservations but got " + successCount);
+
+        List<Reservation> reservations = reservationRepository.findAll();
+
+        long duplicated = reservations.stream()
+                .collect(Collectors.groupingBy(Reservation::getSlotId, Collectors.counting()))
+                .values().stream()
+                .filter(count -> count > 1)
+                .count();
+
+        Assertions.assertEquals(0, duplicated,
+                "Some slot assigned to more than one customer");
+
     }
 
     private record RequestResult(boolean success, long durationMs) {
