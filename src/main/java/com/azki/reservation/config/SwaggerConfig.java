@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI blueWalletOpenAPI() {
+    public OpenAPI azkiOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Azki Reservation API")
