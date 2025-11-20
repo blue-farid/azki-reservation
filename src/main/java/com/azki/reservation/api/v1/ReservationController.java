@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.azki.reservation.constant.AuthoritiesConstant.CUSTOMER;
 
-//TODO change delete status from 200
-//TODO add bulkhead here on reserve
-
 @RestController
 @RequestMapping("/api/reservations")
 @RequiredArgsConstructor
