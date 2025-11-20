@@ -1,16 +1,16 @@
 version: '3.9'
 services:
-  # azki:
-  #   build: .
-  #   container_name: azki
-  #   # We could add configs here too.
-  #   environment:
-  #     SPRING_PROFILES_ACTIVE: prod
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - db
-  #     - redis
+  azki:
+    build: .
+    container_name: azki
+    # We could add configs here too.
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
 
   db:
     image: postgres:16

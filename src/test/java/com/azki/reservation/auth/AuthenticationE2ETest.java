@@ -1,12 +1,12 @@
-package com.azki.reservation.e2e.auth;
+package com.azki.reservation.auth;
 
 import com.azki.reservation.api.v1.model.ApiResponse;
 import com.azki.reservation.api.v1.request.LoginOrSignupRequest;
 import com.azki.reservation.api.v1.request.OtpRequest;
 import com.azki.reservation.api.v1.response.LoginOrSignupResponse;
 import com.azki.reservation.domain.Customer;
-import com.azki.reservation.e2e.BaseE2ETest;
-import com.azki.reservation.e2e.mockdata.Constants;
+import com.azki.reservation.BaseE2ETest;
+import com.azki.reservation.mockdata.Constants;
 import com.azki.reservation.repository.CustomerRepository;
 import com.azki.reservation.util.RedisUtil;
 import org.junit.jupiter.api.*;

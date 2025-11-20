@@ -1,4 +1,4 @@
-package com.azki.reservation.e2e.auth;
+package com.azki.reservation.auth;
 
 import com.azki.reservation.api.v1.AuthController;
 import com.azki.reservation.api.v1.model.CustomerDto;

@@ -1,4 +1,4 @@
-package com.azki.reservation.e2e;
+package com.azki.reservation;
 
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.test.context.SpringBootTest;
