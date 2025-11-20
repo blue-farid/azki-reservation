@@ -14,10 +14,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +56,16 @@ public class AzkiReservationExceptionHandler {
     @ExceptionHandler(BulkheadFullException.class)
     public ResponseEntity<ApiResponse<ErrorResponse>> handleBulkheadFull(BulkheadFullException ex) {
         return buildResponse(HttpStatus.TOO_MANY_REQUESTS, messageSource.getMessageIfExist("exception.reservation.bulkhead-full"));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleNoResourceFound(NoResourceFoundException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, messageSource.getMessageIfExist("exception.path-not-found"));
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> unauthorized(AuthorizationDeniedException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, messageSource.getMessageIfExist("exception.unauthorized"));
     }
 
     private ResponseEntity<ApiResponse<ErrorResponse>> buildResponse(HttpStatusCode status, String message) {

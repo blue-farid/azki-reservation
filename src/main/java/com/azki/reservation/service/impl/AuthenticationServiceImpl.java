@@ -20,6 +20,7 @@ import com.azki.reservation.util.MailUtil;
 import com.azki.reservation.util.RedisUtil;
 import com.azki.reservation.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,6 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final MailUtil mailUtil;
     private final JwtUtil jwtUtil;
     private final SecurityProperties securityProperties;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -58,10 +60,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginOrSignupResponse loginWithPassword(LoginWithPasswordRequest request) {
-        Optional<Customer> customer = customerRepository.findByPasswordAndMail(request.getPassword(),
-                request.getMail());
+        Optional<Customer> customer = customerRepository.findByMail(request.getMail());
 
-        if (customer.isEmpty()) {
+        if (customer.isEmpty() || (StringUtils.hasText(customer.get().getPassword())
+                && customer.get().getPassword().equals(passwordEncoder.encode(request.getPassword())))) {
             throw new InvalidEmailOrPasswordException();
         }
 
@@ -82,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         customerRepository.save(customerRepository.findById(request.getId())
                 .orElseThrow(CustomerNotFoundException::new)
-                .setPassword(request.getPassword()));
+                .setPassword(passwordEncoder.encode(request.getPassword())));
     }
 
     @Override

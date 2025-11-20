@@ -13,7 +13,7 @@ public class InvalidEmailOrPasswordException extends BaseException {
 
     @Override
     public HttpStatusCode getStatusCode() {
-        return HttpStatus.FORBIDDEN;
+        return HttpStatus.UNAUTHORIZED;
     }
 
     @Override

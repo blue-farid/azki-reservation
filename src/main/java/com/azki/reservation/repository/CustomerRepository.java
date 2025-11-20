@@ -19,13 +19,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByMail(String mail);
 
     @Cacheable(
-            value = "customer-mail-password",
-            key = "#root.methodName+#mail+#password",
-            unless = "#result == null"
-    )
-    Optional<Customer> findByPasswordAndMail(String password, String mail);
-
-    @Cacheable(
             value = "customer-id",
             key = "#root.methodName+#id",
             unless = "#result == null"
